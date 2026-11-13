@@ -1,14 +1,10 @@
 package net.immortaldevs.bindcmd;
 
-import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Identifier;
 
 public class CommandBinding {
-    private static final KeyBinding.Category CATEGORY = new KeyBinding.Category(
-            Identifier.of("bindcmd", "category")
-    );
+    private static final String CATEGORY = "key.categories.bindcmd";
 
     public boolean wasPressed = false;
     public String command;
@@ -55,16 +51,20 @@ public class CommandBinding {
         return key.isPressed();
     }
 
-    public void setBoundKey(KeyInput keyInput) {
+    public void setBoundKey(int keyCode, int scanCode) {
         unbind();
-        InputUtil.Key inpuKey = keyInput.isEscape() ? InputUtil.UNKNOWN_KEY : InputUtil.fromKeyCode(keyInput);
-        key = new KeyBinding(inpuKey.getTranslationKey(), inpuKey.getCode(), CATEGORY);
+        InputUtil.Key inputKey = InputUtil.fromKeyCode(keyCode, scanCode);
+        if (inputKey == InputUtil.UNKNOWN_KEY) {
+            key = new KeyBinding("key.keyboard.unknown", -1, CATEGORY);
+        } else {
+            key = new KeyBinding(inputKey.getTranslationKey(), InputUtil.Type.KEYSYM, inputKey.getCode(), CATEGORY);
+        }
     }
 
     public void setBoundMouse(int button) {
         unbind();
-        InputUtil.Key inpuKey = InputUtil.Type.MOUSE.createFromCode(button);
-        key = new KeyBinding(inpuKey.getTranslationKey(), InputUtil.Type.MOUSE, inpuKey.getCode(), CATEGORY);
+        InputUtil.Key inputKey = InputUtil.Type.MOUSE.createFromCode(button);
+        key = new KeyBinding(inputKey.getTranslationKey(), InputUtil.Type.MOUSE, inputKey.getCode(), CATEGORY);
     }
 
     public void unbind() {

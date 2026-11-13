@@ -1,0 +1,12 @@
+{
+  "text.bindcmd.config.title": "BindCommands 설정",
+  "text.bindcmd.config.add_command": "명령어 추가",
+  "text.bindcmd.config.remove": "제거",
+  "text.bindcmd.config.server_setting": "서버 설정으로 지정됨",
+  "text.bindcmd.config.world_setting": "월드 설정으로 지정됨",
+
+  "category.bindcmd.skills": "MMOCore 스킬",
+  "key.bindcmd.skill_f": "스킬 키 F",
+  "key.bindcmd.skill_r": "스킬 키 R",
+  "key.bindcmd.skill_c": "스킬 키 C"
+}

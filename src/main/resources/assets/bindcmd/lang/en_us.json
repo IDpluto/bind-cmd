@@ -3,5 +3,10 @@
   "text.bindcmd.config.add_command": "Add Command",
   "text.bindcmd.config.remove": "Remove",
   "text.bindcmd.config.server_setting": "Set by server configuration",
-  "text.bindcmd.config.world_setting": "Set by world configuration"
+  "text.bindcmd.config.world_setting": "Set by world configuration",
+
+  "category.bindcmd.skills": "MMOCore Skills",
+  "key.bindcmd.skill_f": "Skill Key F",
+  "key.bindcmd.skill_r": "Skill Key R",
+  "key.bindcmd.skill_c": "Skill Key C"
 }

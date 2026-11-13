@@ -95,9 +95,9 @@ public final class BindingsListWidget extends ElementListWidget<BindingsListWidg
         }
 
         @Override
-        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float delta) {
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float delta) {
             TextRenderer textRenderer = BindingsListWidget.this.client.textRenderer;
-            int textWidth = getWidth() - editButton.getWidth() - deleteButton.getWidth() - 3;
+            int textWidth = entryWidth - editButton.getWidth() - deleteButton.getWidth() - 3;
             boolean isClient = binding.getSource() == BindSource.CLIENT;
             Tooltip tooltip = null;
             if (binding.getSource() == BindSource.SERVER) {
@@ -105,10 +105,6 @@ public final class BindingsListWidget extends ElementListWidget<BindingsListWidg
             } else if (binding.getSource() == BindSource.WORLD) {
                 tooltip = worldBindingTooltip;
             }
-
-            int x = getX();
-            int y = getY();
-            int height = getHeight();
 
             if (hovered || inputField.isFocused()) {
                 inputField.setX(x - 4);
@@ -118,25 +114,25 @@ public final class BindingsListWidget extends ElementListWidget<BindingsListWidg
                 inputField.setEditable(isClient);
                 inputField.render(context, mouseX, mouseY, delta);
             } else {
-                int yPosition = y + height / 2 - 2;
+                int yPosition = y + entryHeight / 2 - 2;
                 String text = cutString(binding.command, textRenderer, textWidth - 12);
                 context.drawTextWithShadow(textRenderer, text, x, yPosition, Colors.WHITE);
             }
 
             editButton.setTooltip(tooltip);
             editButton.active = isClient;
-            editButton.setX(x + getWidth() - editButton.getWidth() - deleteButton.getWidth() - 2);
+            editButton.setX(x + entryWidth - editButton.getWidth() - deleteButton.getWidth() - 2);
             editButton.setY(y);
 
             deleteButton.setTooltip(tooltip);
             deleteButton.active = isClient;
-            deleteButton.setX(x + getWidth() - deleteButton.getWidth());
+            deleteButton.setX(x + entryWidth - deleteButton.getWidth());
             deleteButton.setY(y);
             deleteButton.render(context, mouseX, mouseY, delta);
 
             if (duplicate) {
                 int j = editButton.getX() - 6;
-                context.fill(j, y + 2, j + 3, y + height + 2, 0xFFFF0000);
+                context.fill(j, y + 2, j + 3, y + entryHeight + 2, 0xFFFF0000);
             }
 
             editButton.render(context, mouseX, mouseY, delta);

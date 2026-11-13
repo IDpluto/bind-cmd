@@ -11,9 +11,12 @@ import net.minecraft.client.MinecraftClient;
 public final class BindCmdClient implements ClientModInitializer {
     private static long lastKeyPress = 0L;
     private static final long COOLDOWN = 200L;
+    private static SkillComboTracker skillComboTracker;
+    private static boolean attackWasPressed = false;
 
     @Override
     public void onInitializeClient() {
+        skillComboTracker = new SkillComboTracker();
         PayloadTypeRegistry.playS2C().register(
                 ConfigS2CPayload.ID, ConfigS2CPayload.CODEC
         );
@@ -44,10 +47,46 @@ public final class BindCmdClient implements ClientModInitializer {
     }
 
     private static void onEndClientTick(MinecraftClient client) {
+        // Update skill combo tracker
+        if (skillComboTracker != null) {
+            skillComboTracker.tick();
+            handleSkillCasting(client);
+        }
+
+        // Handle regular command bindings
         if (System.currentTimeMillis() - lastKeyPress < COOLDOWN) return;
         for (CommandBinding binding : Config.getBindings()) {
             handleBinding(client, binding);
         }
+    }
+
+    /**
+     * Handles MMOCore skill casting with key combos
+     */
+    private static void handleSkillCasting(MinecraftClient client) {
+        var networkHandler = client.getNetworkHandler();
+        if (networkHandler == null || client.player == null) return;
+
+        // Check for left click (attack key)
+        boolean attackPressed = client.options.attackKey.isPressed();
+
+        // Detect left click press (rising edge)
+        if (attackPressed && !attackWasPressed) {
+            // Check if we have an active combo
+            if (skillComboTracker.hasActiveCombo()) {
+                int slot = skillComboTracker.getSkillSlot();
+                if (slot > 0) {
+                    String playerName = client.player.getName().getString();
+                    String command = "mmocore cast specific " + playerName + " " + slot;
+                    networkHandler.sendChatCommand(command);
+
+                    // Reset combo state after casting
+                    skillComboTracker.reset();
+                }
+            }
+        }
+
+        attackWasPressed = attackPressed;
     }
 
     private static void handleBinding(MinecraftClient client, CommandBinding binding) {
